@@ -1,34 +1,29 @@
-# Contract Analysis 
+# Contract Analysis
 
-This code base contains code for analyzing contracts using generative AI. It follows a multi-step process where we parse and extract key information from the contracts. We then bring that information back together to classify the sequence of contracts and extract pertinent metadata from them for entering into a contract management system like Icertis. The code base is meant to be simple and broken down into the following steps.
+Analyze contracts using generative AI on Databricks. The pipeline parses contract documents, extracts key information, classifies them (master agreement vs. amendment vs. SOW vs. termination), and pulls detailed metadata for contract management systems.
 
-## 1: Read Contracts (01_read)
-Ingest raw contract documents from the source system or storage location to ensure all relevant contracts are available for analysis. We take the bytes and save them into a delta table so we can parallelize.
+## Notebooks
 
-## 2: Parse Contracts (02_parse)
-Extract text and structure from the ingested contract files, converting them into a machine-readable format for downstream processing. This is the most compute demanding and lengthy step, since we are parsing every single contract in the database.
+Run these in order. Each notebook has widget parameters at the top (catalog, schema, etc.) and markdown explanations before every step.
 
-## 3: Backup or Sample Contracts (03_backup_sample)
-Create backups or generate representative samples of the parsed contracts to safeguard data and enable efficient testing. 
+### 01_parse -- Download, Read, Parse
+Downloads contract PDFs from Cook County open data, reads them into a Delta `bytes` table, parses with `AI_PARSE_DOCUMENT`, and flattens into a `flat` table with full text, preamble (first 100 words), and truncated text (first 5000 words).
 
-## 4: Flatten Contract Data (04_flatten)
-Normalize and flatten the contract data structure to simplify subsequent extraction and analysis steps. This extracts a preamble, text, and truncated text so that we have something to pass to the LLM.
+### 02_extract -- References and Doc Info
+Uses an LLM to extract two things from each contract: (1) referenced agreements and documents, and (2) key document info (agreement name, type, dates, master/amendment status). Outputs `references` and `doc_info` tables.
 
-## 5: Get Document References (05_doc_info)
-Identify and extract references such as parties, related agreements, and cross-referenced clauses within the contracts.
+### 03_assemble -- Vector Search and Context Assembly
+Creates a `sections` table from parsed documents, sets up Databricks Vector Search indexes, then assembles a comprehensive context table per contract. Each row includes the document's own info plus folder-level related documents and semantically similar documents from vector search.
 
-## 6: Extract Key Document Information (06_doc_info)
-Use generative AI models to extract important clauses, entities, and high-level metadata from the contracts.
+### 04_classify -- Contract Classification
+Classifies each document: is it a master agreement, does it have amendments, what are the initial and final expiry dates. Uses the assembled context from step 3. Outputs a `classified` table with rationale and confidence scores.
 
-## 7: Set Up Vector Search Indexes (07_vector_search)
-This is a notebook that sets up vector searches for retrieving key information from the contracts. It grabs some key information.
-Index the extracted contract data using vector search to enable semantic search and retrieval of relevant contract sections.
+### 05_metadata -- Detailed Metadata Extraction
+Extracts detailed metadata for each contract type using field definitions from `metadata.csv` and prompt templates from `prompt_{type}.md`. Supports four contract types: master_agreement, amendment, scope_of_work, termination.
 
-## 8: Assemble (08_assemble)
-This is a tricky SQL query that pulls together the above information - it takes documents from the same folder as the document being analyzed and pulls the key information and preamble. It also runs vector search on semantically similar documents and puts the doc_info and preamble for the top 5 docs as additional metadata for the model.
+## Supporting Files
 
-## 9: Classify Master Agreements, Dates, and Sequencing (09_classify)
-We pull all the above work together and use the LLM to classify the summarized documents, concisely stating whether the document being analyzed is a master agreement or not, and providing the referenced agreements. 
-
-## 10: Extract Detailed Metadata from All Agreements (10_metadata)
-Once we have all the master agreements, we focus solely on the master agreements and extract comprehensive metadata from each agreement to support integration with contract management systems and downstream business processes.
+- `metadata.csv` -- field definitions per contract type (name, description, allowed values)
+- `prompt_{type}.md` -- base prompt templates for each contract type
+- `cook_county_contracts.parquet` -- source data from Cook County open data portal
+- `*_file_names.csv` -- optional file lists to filter which contracts to process

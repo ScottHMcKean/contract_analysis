@@ -48,3 +48,29 @@ amendment,payment_term,"if the document amends the original payment term of the 
 amendment,amendment_number,"some master agreements have multiple amendments. this is the number pertaining to the order (for example, if there are 5 amendments, and this document is the 3rd, then the amendment number is 3)",
 amendment,agreement_counterparty_term,how is the counterparty described in the main agreement?,"Consultant, Supplier, Seller, Contractor, Company"
 amendment,amendment_details,"what is being amended from the master agreement (expiry date, payment term, rates, clauses, etc.)",
+scope_of_work,parent_agreement_name,The name or filename of the master agreement this SOW falls under.,
+scope_of_work,sow_title,The title of the scope of work document.,
+scope_of_work,sow_number,"The SOW number or identifier, if available.",
+scope_of_work,effective_date,The effective or start date of the SOW in YYYY-MM-DD format if available.,
+scope_of_work,expiry_date,The end or expiry date of the SOW in YYYY-MM-DD format if available.,
+scope_of_work,scope_description,"A concise summary of the work to be performed (2-3 sentences max).",
+scope_of_work,deliverables,"List of key deliverables or work products, comma-separated.",
+scope_of_work,milestones,"Key milestones or phases with dates if available, comma-separated.",
+scope_of_work,pricing_type,How is the work priced?,"Fixed Price, Time and Materials, Cost Plus, Unit Rate, Not Specified"
+scope_of_work,estimated_value,"Estimated total value of the SOW. Provide as a string, numbers only, no currency symbols.",
+scope_of_work,currency,The currency of the SOW value.,"CAD, EUR, USD, INR"
+scope_of_work,acceptance_criteria,"Acceptance criteria or completion standards, if specified.",
+scope_of_work,location,"The work location or site, if specified.",
+scope_of_work,counterparty_legal_entity_name,The legal entity name of the counterparty performing the work.,
+scope_of_work,corp_legal_entity_name,The legal entity name of the corporation commissioning the work.,
+termination,parent_agreement_name,The name or filename of the agreement being terminated.,
+termination,termination_date,The effective date of termination in YYYY-MM-DD format if available.,
+termination,termination_type,The type of termination.,"For Convenience, For Cause, Mutual, Expiration, Not Specified"
+termination,termination_reason,"The stated reason for termination, if provided.",
+termination,notice_date,The date the termination notice was given in YYYY-MM-DD format if available.,
+termination,notice_period_days,"The required notice period in days, if specified.",
+termination,outstanding_obligations,"Any outstanding obligations or work to be completed after termination.",
+termination,settlement_terms,"Settlement terms or final payment arrangements, if specified.",
+termination,survival_clauses,"Clauses that survive termination (e.g., confidentiality, indemnification).",
+termination,counterparty_legal_entity_name,The legal entity name of the counterparty.,
+termination,corp_legal_entity_name,The legal entity name of the corporation.
