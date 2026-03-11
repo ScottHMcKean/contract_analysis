@@ -1,0 +1,34 @@
+bundle:
+  name: contract-analysis
+
+include:
+  - resources/*.yml
+
+variables:
+  catalog:
+    default: "shm"
+  schema:
+    default: "contract"
+  volume_name:
+    default: "raw"
+  batch_size:
+    default: "100"
+  llm_endpoint:
+    default: "databricks-claude-sonnet-4-5"
+  vs_endpoint:
+    default: "contract_vs"
+
+targets:
+  dev:
+    default: true
+    mode: development
+    workspace:
+      profile: DEFAULT
+
+  prod:
+    mode: production
+    workspace:
+      profile: DEFAULT
+    variables:
+      catalog: "shm"
+      schema: "contract"

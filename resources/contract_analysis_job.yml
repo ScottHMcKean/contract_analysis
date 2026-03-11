@@ -1,0 +1,59 @@
+resources:
+  jobs:
+    contract_analysis:
+      name: "[${bundle.target}] Contract Analysis Pipeline"
+      tasks:
+        - task_key: "parse"
+          notebook_task:
+            notebook_path: ../01_parse.ipynb
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+              volume_name: ${var.volume_name}
+              batch_size: ${var.batch_size}
+
+        - task_key: "extract"
+          depends_on:
+            - task_key: "parse"
+          notebook_task:
+            notebook_path: ../02_extract.ipynb
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+              batch_size: ${var.batch_size}
+
+        - task_key: "assemble"
+          depends_on:
+            - task_key: "extract"
+          notebook_task:
+            notebook_path: ../03_assemble.ipynb
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+              endpoint_name: ${var.vs_endpoint}
+
+        - task_key: "classify"
+          depends_on:
+            - task_key: "assemble"
+          notebook_task:
+            notebook_path: ../04_classify.ipynb
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+              batch_size: ${var.batch_size}
+              llm_endpoint: ${var.llm_endpoint}
+
+        - task_key: "metadata"
+          depends_on:
+            - task_key: "classify"
+          notebook_task:
+            notebook_path: ../05_metadata.ipynb
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+              batch_size: ${var.batch_size}
+              llm_endpoint: ${var.llm_endpoint}
+
+      permissions:
+        - level: CAN_VIEW
+          group_name: "users"

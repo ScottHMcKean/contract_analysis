@@ -1,0 +1,4 @@
+plotly
+pandas
+databricks-sql-connector
+databricks-sdk

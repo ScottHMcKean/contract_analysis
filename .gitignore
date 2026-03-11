@@ -1,3 +1,7 @@
+.cursor/
+.ai-dev-kit/
+.vscode/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

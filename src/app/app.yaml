@@ -1,0 +1,10 @@
+command:
+  - "streamlit"
+  - "run"
+  - "app.py"
+
+env:
+  - name: STREAMLIT_SERVER_HEADLESS
+    value: "true"
+  - name: DATABRICKS_WAREHOUSE_ID
+    value: "148ccb90800933a1"

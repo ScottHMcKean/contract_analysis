@@ -1,0 +1,6 @@
+resources:
+  apps:
+    contract_explorer:
+      name: contract-explorer-${bundle.target}
+      description: "Contract Analysis Pipeline Explorer -- Sankey diagram, table schemas, prompts, and metadata fields"
+      source_code_path: ../src/app
